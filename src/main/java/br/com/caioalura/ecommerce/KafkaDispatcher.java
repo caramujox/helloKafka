@@ -1,5 +1,6 @@
 package br.com.caioalura.ecommerce;
 
+import br.com.caioalura.util.GsonSerializer;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -10,9 +11,9 @@ import java.io.Closeable;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
-public class KafkaDispatcher implements Closeable {
+public class KafkaDispatcher<T> implements Closeable {
 
-    private final KafkaProducer<String, String> producer;
+    private final KafkaProducer<String, T> producer;
 
     public KafkaDispatcher() {
         this.producer = new KafkaProducer<>(properties());
@@ -23,12 +24,12 @@ public class KafkaDispatcher implements Closeable {
         Properties properties = new Properties();
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, GsonSerializer.class.getName());
         return properties;
     }
 
-    void send(String topic, String rkey, String value) throws ExecutionException, InterruptedException {
-        ProducerRecord record = new ProducerRecord<String, String>("ECOMMERCE_NEW_ORDER", rkey, value);
+    void send(String topic, String rkey, T value) throws ExecutionException, InterruptedException {
+        ProducerRecord record = new ProducerRecord<>("ECOMMERCE_NEW_ORDER", rkey, value);
         Callback callback = (data, ex) -> {
             if (ex != null) {
                 ex.printStackTrace();

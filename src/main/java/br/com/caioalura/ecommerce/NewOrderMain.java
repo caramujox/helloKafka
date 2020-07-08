@@ -1,21 +1,28 @@
 package br.com.caioalura.ecommerce;
 
+import br.com.caioalura.models.Email;
+import br.com.caioalura.models.Order;
+
+import java.math.BigDecimal;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 public class NewOrderMain {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        try (KafkaDispatcher dispatcher = new KafkaDispatcher()) {
-            ;
-            for (int i = 0; i < 10; i++) {
-                String rkey = UUID.randomUUID().toString();
+        try (KafkaDispatcher orderKafkaDispatcher = new KafkaDispatcher<Order>()) {
+            try (KafkaDispatcher emailDispatcher = new KafkaDispatcher<Email>()) {
+                for (int i = 0; i < 10; i++) {
+                    String userId = UUID.randomUUID().toString();
+                    String orderId = UUID.randomUUID().toString();
+                    BigDecimal amount = new BigDecimal(Math.random() * 5000 + 1);
 
-                String value = "1234, Caio, 12.50";
-                dispatcher.send("ECOMMERCE_NEW_ORDER", rkey, value);
+                    Order order = new Order(userId, orderId, amount);
+                    orderKafkaDispatcher.send("ECOMMERCE_NEW_ORDER", userId, order);
 
 
-                String email = "Thank u! We are processing ur order!";
-                dispatcher.send("ECOMMERCE_SEND_EMAIL", rkey, email);
+                    Email email = new Email("Caio", "Thank u! We are processing ur order!");
+                    emailDispatcher.send("ECOMMERCE_SEND_EMAIL", userId, email);
+                }
             }
         }
     }

@@ -1,12 +1,16 @@
 package br.com.caioalura.ecommerce;
 
+import br.com.caioalura.models.Email;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+
+import java.util.HashMap;
 
 
 public class EmailService {
     public static void main(String[] args) {
         EmailService emailService = new EmailService();
-        try (KafkaService service = new KafkaService(EmailService.class.getSimpleName(), "ECOMMERCE_SEND_EMAIL", emailService::parse)) {
+        try (KafkaService service = new KafkaService(EmailService.class.getSimpleName(), "ECOMMERCE_SEND_EMAIL",
+                emailService::parse, Email.class, new HashMap<>())) {
             service.run();
         }
 
