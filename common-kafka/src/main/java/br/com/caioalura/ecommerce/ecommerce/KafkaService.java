@@ -19,7 +19,7 @@ public class KafkaService<T> implements Closeable {
     private ConsumerFunction parse;
 
 
-    KafkaService(String groupName, String topic, ConsumerFunction parse, Class<T> type, Map<String, String> properties) {
+    public KafkaService(String groupName, String topic, ConsumerFunction parse, Class<T> type, Map<String, String> properties) {
         this(parse, groupName, type, properties);
         consumer.subscribe(Collections.singletonList(topic));
     }
