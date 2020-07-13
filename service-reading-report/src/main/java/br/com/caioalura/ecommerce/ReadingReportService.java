@@ -1,6 +1,7 @@
 package br.com.caioalura.ecommerce;
 
 import br.com.caioalura.ecommerce.ecommerce.KafkaService;
+import br.com.caioalura.ecommerce.ecommerce.Message;
 import br.com.caioalura.models.IO;
 import br.com.caioalura.models.User;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -23,10 +24,11 @@ public class ReadingReportService {
     }
 
 
-    void parse(ConsumerRecord<String, User> record) throws ExecutionException, InterruptedException, IOException {
+    void parse(ConsumerRecord<String, Message<User>> record) throws ExecutionException, InterruptedException, IOException {
         System.out.println("###########################################");
         System.out.println("Processing report for " + record.value());
-        User user = record.value();
+        Message message = record.value();
+        User user = (User) message.getPayload();
 
         File target = new File(user.getReportPath());
         IO.copyTo(SOURCE, target);

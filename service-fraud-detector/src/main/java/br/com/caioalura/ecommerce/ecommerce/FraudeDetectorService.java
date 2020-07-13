@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutionException;
 public class FraudeDetectorService {
     public static void main(String[] args) {
         FraudeDetectorService fraudeDetectorService = new FraudeDetectorService();
-        try (KafkaService service = new KafkaService<Order>(FraudeDetectorService.class.getSimpleName(), "ECOMMERCE_NEW_ORDER",
+        try (KafkaService service = new KafkaService<>(FraudeDetectorService.class.getSimpleName(), "ECOMMERCE_NEW_ORDER",
                 fraudeDetectorService::parse, Order.class, new HashMap<>())) {
             service.run();
         }

@@ -15,7 +15,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 public class KafkaService<T> implements Closeable {
-    private final KafkaConsumer<String, T> consumer;
+    private final KafkaConsumer<String, Message<T>> consumer;
     private ConsumerFunction parse;
 
 
@@ -36,7 +36,7 @@ public class KafkaService<T> implements Closeable {
 
     public void run() {
         while (true) {
-            ConsumerRecords<String, T> records = consumer.poll(Duration.ofMillis(100));
+            ConsumerRecords<String, Message<T>> records = consumer.poll(Duration.ofMillis(100));
             if (!records.isEmpty()) {
                 System.out.println("Encontrei " + records.count() + " registros");
                 for (var record : records) {
@@ -57,7 +57,6 @@ public class KafkaService<T> implements Closeable {
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, GsonDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupName);
         properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, UUID.randomUUID().toString());
-        properties.setProperty(GsonDeserializer.TYPE_CONFIG, type.getName());
         properties.putAll(overrideProperties);
         return properties;
     }
