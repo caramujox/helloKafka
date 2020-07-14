@@ -1,5 +1,6 @@
 package br.com.caioalura.ecommerce;
 
+import br.com.caioalura.ecommerce.ecommerce.CorrelationId;
 import br.com.caioalura.ecommerce.ecommerce.KafkaDispatcher;
 import br.com.caioalura.models.Email;
 import br.com.caioalura.models.Order;
@@ -27,7 +28,7 @@ public class NewOrderServlet extends HttpServlet {
 
         Order order = new Order(orderId, amount, email);
         try {
-            orderKafkaDispatcher.send("ECOMMERCE_NEW_ORDER", email, order);
+            orderKafkaDispatcher.send("ECOMMERCE_NEW_ORDER", email, new CorrelationId(NewOrderServlet.class.getSimpleName()), order);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -36,7 +37,7 @@ public class NewOrderServlet extends HttpServlet {
 
         Email emailCode = new Email("Caio", "Thank u! We are processing ur order!");
         try {
-            emailDispatcher.send("ECOMMERCE_SEND_EMAIL", email, emailCode.toString());
+            emailDispatcher.send("ECOMMERCE_SEND_EMAIL", email, new CorrelationId(NewOrderServlet.class.getSimpleName()), emailCode.toString());
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

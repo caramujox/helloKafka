@@ -18,11 +18,11 @@ public class NewOrderMain {
 
 
                 Order order = new Order(orderId, amount, email);
-                orderKafkaDispatcher.send("ECOMMERCE_NEW_ORDER", email, order);
+                orderKafkaDispatcher.send("ECOMMERCE_NEW_ORDER", email, new CorrelationId(NewOrderMain.class.getSimpleName()), order);
 
 
                 Email emailCode = new Email("Caio", "Thank u! We are processing ur order!");
-                emailDispatcher.send("ECOMMERCE_SEND_EMAIL", email, emailCode.toString());
+                emailDispatcher.send("ECOMMERCE_SEND_EMAIL", email, new CorrelationId(NewOrderMain.class.getSimpleName()), emailCode.toString());
 
             }
         }

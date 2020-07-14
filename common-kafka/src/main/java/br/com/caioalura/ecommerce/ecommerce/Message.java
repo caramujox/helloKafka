@@ -25,4 +25,6 @@ public class Message<T> {
     public CorrelationId getId() {
         return id;
     }
+
+
 }

@@ -37,8 +37,6 @@ public class CreateUserService {
         }
     }
 
-    private final KafkaDispatcher<Order> orderKafkaDispatcher = new KafkaDispatcher<>();
-
     void parse(ConsumerRecord<String, Message<Order>> record) throws SQLException {
         System.out.println("###########################################");
         System.out.println("Processing new order, checking for new users");

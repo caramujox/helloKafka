@@ -1,5 +1,6 @@
 package br.com.caioalura.ecommerce;
 
+import br.com.caioalura.ecommerce.ecommerce.CorrelationId;
 import br.com.caioalura.ecommerce.ecommerce.KafkaDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,7 +19,8 @@ public class GenerateAllReportServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
 
-            batchDispatcher.send("SEND_MESSAGE_TO_ALL_USERS", "USER_GENERATE_READING_REPORT", "USER_GENERATE_READING_REPORT");
+            batchDispatcher.send("ECOMMERCE_SEND_MESSAGE_TO_ALL_USERS", "ECOMMERCE_USER_GENERATE_READING_REPORT",
+                    new CorrelationId(GenerateAllReportServlet.class.getSimpleName()), "ECOMMERCE_USER_GENERATE_READING_REPORT");
 
 
             System.out.println("Generate report to all users!");
